@@ -127,3 +127,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     '/var/www/observatorio/static/',
 ]
+
+
+try:
+    exec(open(os.path.join(BASE_DIR,'observatorio/prod_settings.py')).read())
+except IOError as e:
+    pass
