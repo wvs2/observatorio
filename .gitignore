@@ -9,3 +9,5 @@ __pycache__
 env/
 venv/
 _public/
+
+prod_secttings.py
