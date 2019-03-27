@@ -15,7 +15,7 @@ from .forms import ProjectForm
 
 class GraphTemplateView(TemplateView):
     template_name = 'app/echarts.html'
-    
+
     # template_name = 'app/echarts.html'
 class IndexTemplateView(TemplateView):
     template_name = 'app/index.html'
