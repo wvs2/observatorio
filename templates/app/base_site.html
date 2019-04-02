@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
     {% block head %}
@@ -100,6 +101,10 @@
       {% endblock %}
       <!-- Custom Theme Scripts -->
       <script src="/static/build/js/custom.js"></script>
+      <script src="{% static 'js/jquery.mask.js' %}"></script>
+      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     {% endblock body %}
+    {% block scripts %}
+    {% endblock %}
   </body>
 </html>

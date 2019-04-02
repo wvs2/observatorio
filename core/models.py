@@ -72,7 +72,13 @@ class Project(Timestamp):
     expected_budget = models.DecimalField('Orçamento previsto', max_digits=10, decimal_places=2, null=True, blank=True)
     executed_budget = models.DecimalField('Orçamento executado', max_digits=10, decimal_places=2, null=True, blank=True)
     status = models.CharField('status', max_length=1, choices=STATUS_CHOICE_PROJECT, default='A')
+    communication_plan = models.FileField('Plano de comunicacao', upload_to='plano_comunicacao/', blank=True)
+    schedule = models.FileField('Cronograma', upload_to='cronograma/', blank=True)
+    scratchs = models.TextField('Riscos', blank=True)
+    tools = models.TextField('Ferramentas utilizadas para gestão do projeto', blank=True)
+    process_management = models.TextField('Processo de gerenciamento de mudanças', blank=True)
     type = models.ForeignKey(Type, verbose_name="tipo", on_delete=models.PROTECT, null=True)
+    life_cicle = models.CharField('Ciclo de vida', max_length=255, null=True, blank=True)
     category = models.ForeignKey(
         Category, verbose_name="categoria", on_delete=models.PROTECT, null=True, blank=False
     )
@@ -85,8 +91,8 @@ class Project(Timestamp):
     def __str__(self):
         return self.name
 
-class LifeCicle(models.Model):
-    step = models.CharField('Fase', max_length=300, null=False)
+class Step(models.Model):
+    name = models.CharField('Fase', max_length=300, null=False)
     march = models.CharField('Marco', max_length=300)
     project = models.ForeignKey(Project, verbose_name="projeto", on_delete=models.CASCADE)
 
@@ -107,7 +113,6 @@ class ProductService(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class Activity(models.Model):
     name = models.CharField("Nome", max_length=500, null=False)

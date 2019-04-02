@@ -1,20 +1,22 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, ListView
-from django.views.generic.edit import CreateView
+from django.views.generic import TemplateView, ListView, FormView
+from django.views.generic.edit import CreateView, UpdateView
 from dal import autocomplete
 from django.contrib import messages
 from datetime import date
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 # Models app
-from .models import Project, Institution, Type, Category
+from .models import Project, Institution, Type, Category, Step, Member
 from django.db.models import OuterRef, Subquery, Count
 # Forms
-from .forms import ProjectForm
+from .forms import ProjectForm, ProjectStepForm, StepFormset, MemberForm, StepForm, MemberFormSet
+from extra_views import InlineFormSetView
+from django.http import JsonResponse
 # Create your views here.
 
-class GraphTemplateView(TemplateView):
-    template_name = 'app/echarts.html'
+# class GraphTemplateView(TemplateView):
+#     template_name = 'app/echarts.html'
 
     # template_name = 'app/echarts.html'
 class IndexTemplateView(TemplateView):
@@ -48,15 +50,91 @@ class IndexTemplateView(TemplateView):
 
 
 class ProjectListView(ListView):
+    context_object_name = "project_list"
     model = Project
     template_name = 'app/project/index.html'
-    paginate_by = 30
+    paginate_by = 25
 
 class ProjectCreateView(CreateView):
     model = Project
     form_class = ProjectForm
     template_name = 'app/project/form.html'
-    success_url = reverse_lazy('core:project')
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('core:project-edit', kwargs = {'pk': self.object.pk})
+
+
+class ProjectStepUpdateView(UpdateView):
+    model = Project
+    form_class = ProjectStepForm
+    template_name = 'app/project/form_step2.html'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('core:project-edit-step3', kwargs={'pk': self.object.pk})
+
+class ProjectStep3UpdateView(TemplateView):
+    template_name = 'app/project/form_step3.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectStep3UpdateView, self).get_context_data(**kwargs)
+        project = Project.objects.get(pk=self.kwargs['pk'])
+        context['project'] = project
+        context['members'] = Member.objects.filter(project=project)
+        context['steps'] = Step.objects.filter(project=project)
+        return context
+
+def save_member_project(request, project_pk):
+    if request.is_ajax():
+        if request.method == 'POST':
+            project = Project.objects.get(pk=project_pk)
+            try:
+                if 'id' in request.POST:
+                    member = Member.objects.get(pk=request.POST['id'])
+                    member.name = request.POST['name']
+                    member.save()
+                else:
+                    Member.objects.create(
+                        name=request.POST['name'], project=project
+                    )
+                return JsonResponse({'code':'200'})
+            except Exception as e:
+                return JsonResponse({'code': '400', 'id': request.POST, 'message': str(e)})
+
+def remove_member_project(request, member_pk):
+    if request.method == 'GET':
+        try:
+            Member.objects.get(pk=member_pk).delete()
+            return JsonResponse({'code':'200'})
+        except Exception as e:
+            return JsonResponse({'code': '400', 'id': request.POST, 'message': str(e)})
+
+
+def save_step_project(request, project_pk):
+    if request.is_ajax():
+        if request.method == 'POST':
+            project = Project.objects.get(pk=project_pk)
+            try:
+                if 'id' in request.POST:
+                    step = Step.objects.get(pk=request.POST['id'])
+                    step.name = request.POST['name']
+                    step.march = request.POST['marco']
+                    step.save()
+                else:
+                    Step.objects.create(
+                        name=request.POST['name'], march=request.POST['marco'], project=project
+                    )
+                return JsonResponse({'code':'200'})
+            except Exception as e:
+
+                return JsonResponse({'code': '400', 'id': request.POST, 'message': str(e)})
+
+def remove_step_project(request, step_pk):
+    if request.method == 'GET':
+        try:
+            Step.objects.get(pk=step_pk).delete()
+            return JsonResponse({'code':'200'})
+        except Exception as e:
+            return JsonResponse({'code': '400', 'id': request.POST, 'message': str(e)})
 
 
 def executed_project(request, project_pk):

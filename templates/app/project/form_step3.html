@@ -1,0 +1,212 @@
+{% extends "app/base_site.html" %}
+{% load widget_tweaks %}
+
+{% block title %} Dashboard 1 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  {{form.media}}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="">
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Projeto</h2>
+            <a href="{% url 'core:project' %}" class="btn btn-warning pull-right">Projetos</a>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+              <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+              <table class="table table-bordered">
+                <caption>Membros</caption>
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th width="15%">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="table-members">
+                  {% for member in members %}
+                    <tr>
+                      <td><input type="text" class="form-control member_name" value="{{member.name}}"/></td>
+                      <td>
+                        <a href="#" onclick="salvar(this);" data-id="{{member.pk}}" class="btn btn-success fas fa-save"></a>
+                        <a href="#" onclick="remover(this)" data-url = "{% url 'core:remove-member' member.pk %}" class="btn btn-danger fas fa-trash"></a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="2" align="right">
+                      <a href="#" onclick="adicionarRow();" class="btn btn-info fas fa-plus"></a>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+
+              <table class="table table-bordered">
+                <caption>Fases</caption>
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Marco</th>
+                    <th width="15%">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="table-steps">
+                  {% for step in steps %}
+                    <tr>
+                      <td><input type="text" class="form-control step_name" value="{{step.name}}"/></td>
+                      <td><input type="text" class="form-control step_march" value="{{step.march}}"/></td>
+                      <td>
+                        <a href="#" onclick="salvarStep(this);" data-id="{{step.pk}}" class="btn btn-success fas fa-save"></a>
+                        <a href="#" onclick="removerStep(this)" data-url = "{% url 'core:remove-step' step.pk %}" class="btn btn-danger fas fa-trash"></a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="3" align="right">
+                      <a href="#" onclick="adicionarStepRow();" class="btn btn-info fas fa-plus"></a>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  var urlSave = "{% url 'core:save-member' project.pk %}";
+  var urlSaveStep = "{% url 'core:save-step' project.pk %}";
+  function adicionarRow(){
+    members = $("#table-members");
+    tr = "<tr>";
+    td = '<td><input type="text" class="form-control member_name"/></td>';
+    td += '<td>';
+    td += '<a href="#" onclick="salvar(this)" class="btn btn-success fas fa-save"></a>';
+    td += '<a href="#" onclick="remover(this)" class="btn btn-danger fas fa-trash"></a></td>';
+    tr += td+"<tr>";
+    members.append(tr);
+  }
+
+  function adicionarStepRow(){
+    members = $("#table-steps");
+    tr = "<tr>";
+    td = '<td><input type="text" class="form-control step_name"/></td>';
+    td += '<td><input type="text" class="form-control step_marco"/></td>';
+    td += '<td>';
+    td += '<a href="#" onclick="salvarStep(this)" class="btn btn-success fas fa-save"></a>';
+    td += '<a href="#" onclick="removerStep(this)" class="btn btn-danger fas fa-trash"></a></td>';
+    tr += td+"<tr>";
+    members.append(tr);
+  }
+
+  function remover(handle){
+    // e.preventDefault();
+    linha_editada = $(handle).closest('tr');
+    urlRemove = $(handle).attr('data-url');
+    token = "{{csrf_token}}";
+
+    swal({
+      title: "Remover membro do projeto",
+      text: "Deseja realmente remover este membro?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+          $.ajax({
+            url: urlRemove,
+            type:"GET",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          }).done(function(data){
+             console.log(data);
+          }).fail(function(data){
+            console.log(data);
+          });
+          linha_editada.remove();
+      }
+    });
+  }
+
+  function removerStep(handle){
+    // e.preventDefault();
+    linha_editada = $(handle).closest('tr');
+    urlRemove = $(handle).attr('data-url');
+    token = "{{csrf_token}}";
+
+    swal({
+      title: "Remover fase do projeto",
+      text: "Deseja realmente remover esta fase?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+          $.ajax({
+            url: urlRemove,
+            type:"GET",
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          }).done(function(data){
+             console.log(data);
+          }).fail(function(data){
+            console.log(data);
+          });
+          linha_editada.remove();
+      }
+    });
+  }
+
+  function salvar(handle){
+    var row = $(handle).closest('tr');
+    id_member = $(handle).attr('data-id');
+    name_member = row.find('.member_name').val();
+    $.ajax({
+      url: urlSave,
+      type:"POST",
+      headers: {'X-CSRFToken': '{{ csrf_token }}'},
+      data: {id: id_member, name: name_member}
+    }).done(function(data){
+      if (data.code == '200'){
+        swal("Sucesso!", "Salvo com sucesso!!", "success");
+      }
+    });
+  }
+
+  function salvarStep(handle){
+    var row = $(handle).closest('tr');
+    id_step = $(handle).attr('data-id');
+    name_step = row.find('.step_name').val();
+    march_step = row.find('.step_marco').val();
+    $.ajax({
+      url: urlSaveStep,
+      type:"POST",
+      headers: {'X-CSRFToken': '{{ csrf_token }}'},
+      data: {id: id_step, name: name_step, marco:march_step}
+    }).done(function(data){
+      if (data.code == '200'){
+        swal("Sucesso!", "Salvo com sucesso!!", "success");
+      }else{
+        console.log(data);
+      }
+    });
+  }
+</script>
+{% endblock %}
