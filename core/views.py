@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, ListView, FormView
+from django.views.generic import TemplateView, ListView, FormView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from dal import autocomplete
 from django.contrib import messages
@@ -59,6 +59,14 @@ class ProjectCreateView(CreateView):
     model = Project
     form_class = ProjectForm
     template_name = 'app/project/form.html'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('core:project-edit', kwargs = {'pk': self.object.pk})
+
+
+class ProjectDetailView(DetailView):
+    model = Project
+    template_name = 'app/project/detail.html'
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('core:project-edit', kwargs = {'pk': self.object.pk})

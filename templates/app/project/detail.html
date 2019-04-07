@@ -1,0 +1,146 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} Project Details {% endblock title %}
+
+{% block sidebar_class %}menu_fixed{% endblock sidebar_class %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3>Projeto</h3>
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>{{object}}</h2>
+              <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+
+              <div class="col-md-12 col-sm-9 col-xs-12">
+                <ul class="stats-overview">
+                  <li>
+                    <span class="name"> Custo estimado</span>
+                    <span class="value text-info"> {{object.expected_budget|default_if_none:"0"}} </span>
+                  </li>
+                  <li>
+                    <span class="name"> Valor gasto </span>
+                    <span class="value text-danger"> {{object.executed_budget|default_if_none:"0"}} </span>
+                  </li>
+                  <li class="hidden-phone">
+                    <span class="name"> Situação</span>
+                    <span class="value text-success"> {{object.get_status_display}} </span>
+                  </li>
+                </ul>
+                <ul class="stats-overview">
+                  <li>
+                    <span class="name"> Data Início</span>
+                    <span class="value text-info"> {{object.start_date|date:"d/m/Y"}} </span>
+                  </li>
+                  <li>
+                    <span class="name"> Previsão de Término </span>
+                    <span class="value text-danger"> {{object.end_date|date:"d/m/Y"}} </span>
+                  </li>
+                  <li class="hidden-phone">
+                    <span class="name"> Data de Conclusão</span>
+                    <span class="value text-success"> {{object.finished_date|date:"d/m/Y"}} </span>
+                  </li>
+                </ul>
+                <ul class="stats-overview">
+                  <li>
+                    <span class="name"> Tipo</span>
+                    <span class="value text-info"> {{object.type}} </span>
+                  </li>
+                  <li>
+                    <span class="name"> Categoria </span>
+                    <span class="value text-info"> {{object.category}} </span>
+                  </li>
+                  <li class="hidden-phone">
+                    <span class="name"> Instituição</span>
+                    <span class="value text-success"> {{object.institution}} </span>
+                  </li>
+                </ul>
+                <ul class="stats-overview">
+                  <li>
+                    <span class="name"> Cronograma</span>
+                    <span class="value text-info">
+                      {% if object.schedule %}
+                      <a href="{{object.schedule.url}}" target="_blank">Visualizar</a>
+                      {%else%}
+                      <span class="value text-success"> Não cadastrado </span>
+                      {% endif %}
+                    </span>
+                  </li>
+                  <li>
+                    <span class="name"> Plano de Comunicação</span>
+                    {% if object.communication_plan %}
+                      <a href="{{object.communication_plan.url}}" target="_blank">Visualizar</a>
+                    {%else%}
+                    <span class="value text-success"> Não cadastrado </span>
+                    {% endif %}
+                  </li>
+                  <li class="hidden-phone">
+                    <span class="name"> Ciclo de Vida</span>
+                    <span class="value text-success"> {{object.life_cicle|default_if_none:"Não cadastrado"}} </span>
+                  </li>
+                </ul>
+                <br />
+                <table class="table table-bordered">
+                   <tbody>
+                     <tr>
+                       <td align="center" style="font-size: 15pt;">Riscos</td>
+                     </tr>
+                     <tr>
+                       <td>{{object.scratchs}}</td>
+                     </tr>
+                     <tr>
+                       <td align="center" style="font-size: 15pt;">Ferramentas</td>
+                     </tr>
+                     <tr>
+                       <td>{{object.tools}}</td>
+                     </tr>
+                     <tr>
+                       <td align="center" style="font-size: 15pt;">Equipe</td>
+                     </tr>
+                     {% for member in object.member_set.all%}
+                     <tr>
+                        <td>{{member}}</td>
+                     </tr>
+                     {% endfor %}
+                     <tr>
+                       <td align="center" style="font-size: 15pt;" colspan="2">FASES</td>
+                     </tr>
+                     {% for step in object.step_set.all %}
+                     <tr>
+                        <td>{{step.name}}</td>
+                        <td>{{step.march}}</td>
+                     </tr>
+                     {% endfor %}
+                   </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <!-- ECharts -->
+  <script src="/static/vendors/echarts/dist/echarts.min.js"></script>
+{% endblock javascripts %}
