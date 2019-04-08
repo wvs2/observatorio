@@ -1,4 +1,5 @@
 from django.db import models
+# from django.db.models import Count
 # Create your models here.
 
 
@@ -24,6 +25,18 @@ class Institution(models.Model):
             return institution_project/total_project*100
         else:
             return 0
+
+    def get_categorias(self):
+        categories = Project.objects.filter(institution=self).values('category__name', 'category__pk').annotate(
+            total=models.Count('category__name'),
+        ).order_by('-total')
+        retorno = []
+        for c in categories:
+            concluidos = Project.objects.filter(institution=self, category__pk=c['category__pk'], status='C').count()
+            retorno.append("{}:{}:{}".format(c['category__name'], c['total'], concluidos))
+
+        return ";".join(retorno)
+
 
     # def total_project_per_area(self):
     #     return Project.objects.filter(institution=self).annotate()count()

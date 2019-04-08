@@ -55,6 +55,56 @@ class ProjectListView(ListView):
     template_name = 'app/project/index.html'
     paginate_by = 25
 
+    def get_context_data(self, **kwargs):
+        context = super(ProjectListView, self).get_context_data(**kwargs)
+        # project = Project.objects.get(pk=self.kwargs['pk'])
+        context['situacao'] = ''
+        return context
+
+
+class ProjectFinishedListView(ListView):
+    context_object_name = "project_list"
+    model = Project
+    template_name = 'app/project/index.html'
+    paginate_by = 25
+
+    def get_queryset(sefl):
+        return Project.objects.filter(status='C')
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectFinishedListView, self).get_context_data(**kwargs)
+        context['situacao'] = 'Concluídos'
+        return context
+
+class ProjectUnFinishedListView(ListView):
+    context_object_name = "project_list"
+    model = Project
+    template_name = 'app/project/index.html'
+    paginate_by = 25
+
+    def get_queryset(self):
+        return Project.objects.filter(status='A')
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectUnFinishedListView, self).get_context_data(**kwargs)
+        context['situacao'] = 'Andamento'
+        return context
+
+class ProjectLateListView(ListView):
+    context_object_name = "project_list"
+    model = Project
+    template_name = 'app/project/index.html'
+    paginate_by = 25
+
+    def get_queryset(self):
+        return Project.objects.filter(status='A', end_date__lt=date.today())
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectLateListView, self).get_context_data(**kwargs)
+        context['situacao'] = 'Atrasados'
+        return context
+
+
 class ProjectCreateView(CreateView):
     model = Project
     form_class = ProjectForm

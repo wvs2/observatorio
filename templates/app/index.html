@@ -16,15 +16,15 @@
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fas fa-project-diagram"></i> Concluídos</span>
-        <div class="count">{{success_project}}</div>
+        <div class="count"><a href="{% url 'core:project-finished'%}">{{success_project}}</a></div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fas fa-project-diagram"></i> Em andamento</span>
-        <div class="count">{{progress_project}}</div>
+        <div class="count"><a href="{% url 'core:project-unfinished'%}">{{progress_project}}</a></div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fas fa-project-diagram"></i> Atrasados</span>
-        <div class="count">{{late_project}}</div>
+        <div class="count"><a href="{% url 'core:project-late'%}">{{late_project}}</a></div>
       </div>
       <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top">Novo</span>
@@ -103,7 +103,7 @@
                         <tr>
                           <td>{{institution}}</td>
                           <td class="fs15 fw700 text-right">{{institution.per_project|floatformat:"2"}}%</td>
-                          <td><button type="button" class="btn btn-default fas fa-search" onclick="buildSonar({{institution.pk}});"></button></td>
+                          <td><button type="button" class="btn btn-default fas fa-search" onclick="buildSonar('{{institution.get_categorias}}');"></button></td>
                         </tr>
                         {% endfor %}
                       </tbody>
@@ -151,7 +151,8 @@
   <script src="/static/vendors/echarts/dist/echarts.min.js"></script>
 
   <script type="text/javascript">
-    function buildSonar(institution_pk){
+    function buildSonar(categorias){
+      // console.log(categorias);
       var theme = {
           color: [
               '#26B99A', '#34495E', '#BDC3C7', '#3498DB',
@@ -369,12 +370,21 @@
       };
 
       var echartRadar = echarts.init(document.getElementById('sonar_project'), theme);
-      var UFPI = [
-          {text: 'Engenharia', max: 5},
-          {text: 'TI', max:7},
-          {text: 'Outro', max:10},
-      ];
+      // var IES =
+      categorias = categorias.split(";");
+      var IES = [];
+      var total_projetos = [];
+      var concluidos = [];
+      categorias.forEach(function(valor, chave){
+          dado = valor.split(":");
+          obj = {text: dado[0], max: dado[1]};
+          total_projetos.push(dado[1]);
+          concluidos.push(dado[2]);
+          IES.push(obj);
+      });
+      console.log(IES);
 
+      var UFPI = IES;
       echartRadar.setOption({
           title: {
               text: 'Total de Projetos VS Concluídos',
@@ -406,10 +416,10 @@
               name: 'Total de Projetos VS Concluídos',
               type: 'radar',
               data: [{
-                  value: [5, 7, 10],
+                  value: total_projetos,
                   name: 'Total de Projetos'
               }, {
-                  value: [3, 6, 8],
+                  value: concluidos,
                   name: 'Atualmente Concluídos'
               }]
           }]

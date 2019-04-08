@@ -24,24 +24,12 @@
     <div class="menu_section">
       <h3></h3>
       <ul class="nav side-menu">
-        <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-          <ul class="nav child_menu">
-            <li><a href="{% url 'core:index'%}"> Painel de Controle</a></li>
-          </ul>
-        </li>
+        <li><a href="{% url 'core:index'%}"><i class="fa fa-home"></i> Home </a></li>
         <li>
-          <a href="{% url 'core:project' %}"><i class="fas fa-project-diagram"></i> Projetos <span class="fa fa-chevron-down"></span></a>
+          <a href="{% url 'core:project' %}"><i class="fas fa-project-diagram"></i> Projetos</a>
         </li>
       </ul>
-    </div>
-    <div class="menu_section">
-      <h3>Consultas</h3>
-      <ul class="nav side-menu">
-        <li><a><i class="fa fa-bug"></i> Área <span class="fa fa-chevron-down"></span></a></li>
-        <li><a><i class="fa fa-bug"></i> Situação <span class="fa fa-chevron-down"></span></a></li>
-        <li><a><i class="fa fa-bug"></i> Período <span class="fa fa-chevron-down"></span></a></li>
-      </ul>
-    </div>
+    </div>    
   </div>
   <!-- /sidebar menu -->
 
