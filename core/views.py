@@ -85,43 +85,67 @@ class ProjectListView(ListView):
 class ProjectFinishedListView(ListView):
     context_object_name = "project_list"
     model = Project
-    template_name = 'app/project/index.html'
+    template_name = 'app/project/index_finished.html'
     paginate_by = 25
 
-    def get_queryset(sefl):
-        return Project.objects.filter(status='C')
+    def get_queryset(self):
+        q = self.request.GET.get('pesq')
+        project = Project.objects.filter(status='C')
+        if q:
+            project = project.filter(
+                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q)
+            )
+        return project
 
     def get_context_data(self, **kwargs):
         context = super(ProjectFinishedListView, self).get_context_data(**kwargs)
         context['situacao'] = 'Concluídos'
+        if 'pesq' in self.request.GET:
+            context['search'] = self.request.GET.get('pesq')
         return context
 
 class ProjectUnFinishedListView(ListView):
     context_object_name = "project_list"
     model = Project
-    template_name = 'app/project/index.html'
+    template_name = 'app/project/index_unfinished.html'
     paginate_by = 25
 
     def get_queryset(self):
-        return Project.objects.filter(status='A')
+        q = self.request.GET.get('pesq')
+        project = Project.objects.filter(status='A')
+        if q:
+            project = project.filter(
+                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q)
+            )
+        return project
 
     def get_context_data(self, **kwargs):
         context = super(ProjectUnFinishedListView, self).get_context_data(**kwargs)
         context['situacao'] = 'Andamento'
+        if 'pesq' in self.request.GET:
+            context['search'] = self.request.GET.get('pesq')
         return context
 
 class ProjectLateListView(ListView):
     context_object_name = "project_list"
     model = Project
-    template_name = 'app/project/index.html'
+    template_name = 'app/project/index_late.html'
     paginate_by = 25
 
     def get_queryset(self):
-        return Project.objects.filter(status='A', end_date__lt=date.today())
+        q = self.request.GET.get('pesq')
+        project = Project.objects.filter(status='A', end_date__lt=date.today())
+        if q:
+            project = project.filter(
+                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q)
+            )
+        return project
 
     def get_context_data(self, **kwargs):
         context = super(ProjectLateListView, self).get_context_data(**kwargs)
         context['situacao'] = 'Atrasados'
+        if 'pesq' in self.request.GET:
+            context['search'] = self.request.GET.get('pesq')
         return context
 
 
