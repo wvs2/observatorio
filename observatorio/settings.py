@@ -109,9 +109,11 @@ LANGUAGE_CODE = 'pt-BR'
 
 TIME_ZONE = 'America/Fortaleza'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
+
+USE_THOUSAND_SEPARATOR = True
 
 USE_TZ = True
 

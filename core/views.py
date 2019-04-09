@@ -13,7 +13,7 @@ from django.db.models import OuterRef, Subquery, Count
 from .forms import ProjectForm, ProjectStepForm, StepFormset, MemberForm, StepForm, MemberFormSet
 from extra_views import InlineFormSetView
 from django.http import JsonResponse
-from django.db.models import Count, OuterRef, Subquery, Q
+from django.db.models import Count, OuterRef, Subquery, Q, Sum, FloatField, functions, F
 # Create your views here.
 
 # class GraphTemplateView(TemplateView):
@@ -29,6 +29,13 @@ class IndexTemplateView(TemplateView):
         context['success_project'] = Project.objects.filter(status='C').count()
         context['progress_project'] = Project.objects.filter(status='A').count()
         context['late_project'] = Project.objects.filter(status='A', end_date__lt=date.today()).count()
+        context['total_budget'] = Project.objects.all().aggregate(
+            total_expected_budget = Sum(functions.Coalesce('expected_budget',0), output_field=FloatField()),
+            total_executed_budget = Sum(functions.Coalesce('executed_budget',0), output_field=FloatField())
+        )
+
+        context['project_without_budget'] = Project.objects.filter(expected_budget__isnull=True).count()
+        context['project_burst_budget'] = Project.objects.filter(expected_budget__lt=F('executed_budget')).count()
 
         cat = Category.objects.annotate(
             total_project=Count('project__id')

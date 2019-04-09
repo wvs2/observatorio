@@ -128,7 +128,7 @@
                      </tr>
                      {% endfor %}
                      <tr>
-                       <td align="center" style="font-size: 15pt;" colspan="2">FASES</td>
+                       <td align="center" style="font-size: 15pt;" colspan="2">Fases</td>
                      </tr>
                      {% for step in object.step_set.all %}
                      <tr>
@@ -136,6 +136,21 @@
                         <td>{{step.march}}</td>
                      </tr>
                      {% endfor %}
+                     <tr>
+                       <td align="center" style="font-size: 15pt;" colspan="2">Arquivos</td>
+                     </tr>
+                     <tr>
+                       <td>
+                       {% if object.EAP %}
+                         <strong>EAP: </strong><a href="{{object.eap.url}}" target="_blank">{{object.eap}}</a>
+                       {%elif object.schedule%}
+                        <strong>Cronograma: </strong><a href="{{object.schedule.url}}" target="_blank">{{object.schedule}}</a>
+                        {%elif object.communication_plan%}
+                         <strong>Plano de Comunicação: </strong><a href="{{object.communication_plan.url}}" target="_blank">{{object.communication_plan}}</a>
+
+                       {% endif %}
+                       </td>
+                     </tr>
                    </tbody>
                 </table>
               </div>

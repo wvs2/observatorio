@@ -163,6 +163,30 @@
           </div>
 
         </div>
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <ul class="stats-overview " >
+              <li>
+                <span class="name" style="font-size: 1.3em;"> Custo Total Estimado</span>
+                <span class="value text-info" style="font-size: 1.3em;"> {{total_budget.total_expected_budget|floatformat:"2"}} </span>
+              </li>
+              <li>
+                <span class="name" style="font-size: 1.3em;"> Valor Total Utilizado </span>
+                <span class="value text-danger" style="font-size: 1.3em;"> {{total_budget.total_executed_budget|floatformat:"2"}} </span>
+              </li>
+              <li class="hidden-phone">
+                <span class="name" style="font-size: 1.3em;">Sem Previsão Orçamentária</span>
+                <span class="value text-success" style="font-size: 1.3em;"> {{project_without_budget}} </span>
+              </li>
+            </ul>
+            <ul class="stats-overview " >
+              <li>
+                <span class="name" style="font-size: 1.3em;"> Orçamento Estourado</span>
+                <span class="value text-danger" style="font-size: 1.3em;"> {{project_burst_budget}} </span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
