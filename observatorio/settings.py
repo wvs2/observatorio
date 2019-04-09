@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'django_extensions',
     'extra_views',
+    'mathfilters',
     'dal',
     'dal_select2',
     'core'

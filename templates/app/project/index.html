@@ -13,15 +13,16 @@
         <div class="title_left">
           <h3>Projetos<small>{{situacao}}</small></h3>
         </div>
-
-        <div class="title_right">
-          <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+      <div class="title_right">
+          <form method="get">
+          <div class="col-md-8 col-sm-5 col-xs-12 form-group pull-right top_search">
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Pesquisar">
+              <input type="text" class="form-control" placeholder="Pesquisar" name="pesq">
               <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Buscar!</button>
+                <button class="btn btn-default" type="submit">Buscar!</button>
               </span>
             </div>
+            </form>
           </div>
         </div>
       </div>
@@ -42,7 +43,8 @@
                   <tr>
                     <th style="width: 1%">#</th>
                     <th style="width: 20%">Nome</th>
-                    <th>Membros</th>
+                    <th>Instituição</th>
+                    <!-- <th>Membros</th> -->
                     <th>Status</th>
                     <th style="width: 20%">#Ação</th>
                   </tr>
@@ -56,11 +58,7 @@
                       <br />
                       <small>{{project.created_at}}</small>
                     </td>
-                    <td>
-                      {% for member in project.member_set.all %}
-                        {{member}}<br />
-                      {% endfor %}
-                    </td>
+                    <td>{{project.institution}}</td>
                     <td>
                       <button type="button" class="btn btn-{% if project.status == 'A' %}%primary{% elif project.status == 'E' %}danger{%else%}success{%endif%} btn-xs">{{project.get_status_display}}</button>
                     </td>
@@ -84,13 +82,13 @@
                             to the URL. -->
                             {% if not search %}
                                 <li class="page-item">
-                                    <a class="page-link" href="{% url 'core:project' %}?page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
+                                    <a class="page-link" href="{% url 'core:project' %}?pesq={{search}}&page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
                                 </li>
                             {% else %}
                                 <!-- Append the searched query to the URL, so that on a search results page,
                                 the pagination don't revert to listing all the listview items. -->
                                 <li class="page-item">
-                                    <a class="page-link" href="{% url 'core:project' %}?{{search}}&page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
+                                    <a class="page-link" href="{% url 'core:project' %}?pesq={{search}}&&page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
                                 </li>
                             {% endif %}
                         {% else %}
@@ -99,16 +97,16 @@
                             </li>
                         {% endif %}
                         {% for object in page_obj.paginator.page_range %}
-                            <li class="page-item"><a class="page-link" href="{% url 'core:project' %}?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+                            <li class="page-item"><a class="page-link" href="{% url 'core:project' %}?pesq={{search}}&page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
                         {% endfor %}
                         {% if page_obj.has_next %}
                             {% if not search %}
                                 <li class="page-item">
-                                    <a class="page-link" href="{% url 'core:project' %}?page={{ page_obj.next_page_number }}">Próxima página</a>
+                                    <a class="page-link" href="{% url 'core:project' %}?pesq={{search}}&page={{ page_obj.next_page_number }}">Próxima página</a>
                                 </li>
                             {% else %}
                                 <li class="page-item">
-                                    <a class="page-link" href="{% url 'core:project' %}?{{search}}&page={{ page_obj.next_page_number }}">Próxima página</a>
+                                    <a class="page-link" href="{% url 'core:project' %}?pesq={{search}}&&page={{ page_obj.next_page_number }}">Próxima página</a>
                                 </li>
                             {% endif %}
                         {% else %}

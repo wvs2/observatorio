@@ -58,14 +58,16 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Categoria"
         verbose_name_plural = "Categoria"
+        # ordering = ['progression']
 
     def __str__(self):
         return self.name
 
+    @property
     def progression(self):
         total_project = Project.objects.filter(category=self).count()
         success_project = Project.objects.filter(category=self, status='C').count()
-        if total_project >0:
+        if total_project > 0:
             return success_project/total_project*100
         else:
             return 0

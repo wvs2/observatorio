@@ -13,6 +13,7 @@ from django.db.models import OuterRef, Subquery, Count
 from .forms import ProjectForm, ProjectStepForm, StepFormset, MemberForm, StepForm, MemberFormSet
 from extra_views import InlineFormSetView
 from django.http import JsonResponse
+from django.db.models import Count, OuterRef, Subquery, Q
 # Create your views here.
 
 # class GraphTemplateView(TemplateView):
@@ -29,15 +30,24 @@ class IndexTemplateView(TemplateView):
         context['progress_project'] = Project.objects.filter(status='A').count()
         context['late_project'] = Project.objects.filter(status='A', end_date__lt=date.today()).count()
 
-        # Categorias
-        success_project = "(SELECT COUNT(*) FROM core_project WHERE core_project.category_id = core_category.id and status = 'C')"
-        total_project = "(SELECT COUNT(*) FROM core_project WHERE core_project.category_id = core_category.id)"
-        context['categories'] = Category.objects.extra(
-             select={
-                'order': "{}/{}".format(success_project, total_project)
-             },
-             order_by = ['-order']
-        )[:5]
+        cat = Category.objects.annotate(
+            total_project=Count('project__id')
+        ).extra(
+            select={
+                'progress':  "CAST((SELECT COUNT(*) FROM core_project WHERE category_id = core_category.id and core_project.status = 'C') AS float)/CAST((SELECT COUNT(*) FROM core_project WHERE category_id = core_category.id) AS FLOAT)*100"
+            }
+        ).order_by('-progress')
+
+        tipos = Type.objects.values('name').annotate(
+            total_project=Count('project__id')
+        ).order_by('-total_project')
+        total_restante = 0
+        for tipo in tipos[5:]:
+            total_restante += tipo['total_project']
+
+        context['categories'] = cat[:5]
+        context['tipos'] = tipos[:5]
+        context['total_restante'] = total_restante
         # Locais
         context['institutions'] = Institution.objects.extra(
              select={
@@ -55,10 +65,20 @@ class ProjectListView(ListView):
     template_name = 'app/project/index.html'
     paginate_by = 25
 
+    def get_queryset(self):
+        q = self.request.GET.get('pesq')
+        if q:
+            return Project.objects.filter(
+                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q)
+            )
+        return Project.objects.all()
+        # return self.get_queryset()
+
     def get_context_data(self, **kwargs):
         context = super(ProjectListView, self).get_context_data(**kwargs)
-        # project = Project.objects.get(pk=self.kwargs['pk'])
         context['situacao'] = ''
+        if 'pesq' in self.request.GET:
+            context['search'] = self.request.GET.get('pesq')
         return context
 
 
