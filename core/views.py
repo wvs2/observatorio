@@ -42,7 +42,7 @@ class IndexTemplateView(TemplateView):
             total_project=Count('project__id')
         ).extra(
             select={
-                'progress':  "CAST((SELECT COUNT(*) FROM core_project WHERE category_id = core_category.id and core_project.status = 'C') AS float)/CAST((SELECT COUNT(*) FROM core_project WHERE category_id = core_category.id) AS FLOAT)*100"
+                'progress':  "CAST((SELECT COUNT(*) FROM core_project WHERE category_id = core_category.id and core_project.status = 'C') AS float)/CAST((SELECT COUNT(*) FROM core_project WHERE status = 'C') AS FLOAT)*100"
             }
         ).order_by('-progress')
 
