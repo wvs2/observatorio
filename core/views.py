@@ -156,6 +156,27 @@ class ProjectLateListView(ListView):
             context['search'] = self.request.GET.get('pesq')
         return context
 
+class ProjectBurstListView(ListView):
+    context_object_name = "project_list"
+    model = Project
+    template_name = 'app/project/index_burst.html'
+    paginate_by = 25
+
+    def get_queryset(self):
+        q = self.request.GET.get('pesq')
+        project = Project.objects.filter(expected_budget__lt=F('executed_budget'))
+        if q:
+            project = project.filter(
+                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q) | Q(name__icontains=q)
+            )
+        return project
+
+    def get_context_data(self, **kwargs):
+        context = super(ProjectBurstListView, self).get_context_data(**kwargs)
+        context['situacao'] = 'Estourados'
+        if 'pesq' in self.request.GET:
+            context['search'] = self.request.GET.get('pesq')
+        return context
 
 class ProjectCreateView(CreateView):
     model = Project

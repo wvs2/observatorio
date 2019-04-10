@@ -83,13 +83,13 @@
                             to the URL. -->
                             {% if not search %}
                                 <li class="page-item">
-                                    <a class="page-link" href="{% url 'core:project-late' %}?pesq={{search}}&page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
+                                    <a class="page-link" href="{% url 'core:burst' %}?pesq={{search}}&page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
                                 </li>
                             {% else %}
                                 <!-- Append the searched query to the URL, so that on a search results page,
                                 the pagination don't revert to listing all the listview items. -->
                                 <li class="page-item">
-                                    <a class="page-link" href="{% url 'core:project-late' %}?pesq={{search}}&&page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
+                                    <a class="page-link" href="{% url 'core:burst' %}?pesq={{search}}&&page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
                                 </li>
                             {% endif %}
                         {% else %}
@@ -98,16 +98,16 @@
                             </li>
                         {% endif %}
                         {% for object in page_obj.paginator.page_range %}
-                            <li class="page-item"><a class="page-link" href="{% url 'core:project-late' %}?pesq={{search}}&page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+                            <li class="page-item"><a class="page-link" href="{% url 'core:burst' %}?pesq={{search}}&page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
                         {% endfor %}
                         {% if page_obj.has_next %}
                             {% if not search %}
                                 <li class="page-item">
-                                    <a class="page-link" href="{% url 'core:project-late' %}?pesq={{search}}&page={{ page_obj.next_page_number }}">Próxima página</a>
+                                    <a class="page-link" href="{% url 'core:burst' %}?pesq={{search}}&page={{ page_obj.next_page_number }}">Próxima página</a>
                                 </li>
                             {% else %}
                                 <li class="page-item">
-                                    <a class="page-link" href="{% url 'core:project-late' %}?pesq={{search}}&&page={{ page_obj.next_page_number }}">Próxima página</a>
+                                    <a class="page-link" href="{% url 'core:burst' %}?pesq={{search}}&&page={{ page_obj.next_page_number }}">Próxima página</a>
                                 </li>
                             {% endif %}
                         {% else %}

@@ -186,7 +186,11 @@
             <ul class="stats-overview " >
               <li>
                 <span class="name" style="font-size: 1.3em;"> Orçamento Estourado</span>
-                <span class="value text-danger" style="font-size: 1.3em;"> {{project_burst_budget}} </span>
+                  <a href="{% url 'core:project-burst'%}">
+                    <span class="value text-danger" style="font-size: 1.3em;">
+                    {{project_burst_budget}}
+                    </span>
+                  </a>
               </li>
             </ul>
           </div>
