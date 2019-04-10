@@ -44,6 +44,7 @@
                     <th style="width: 1%">#</th>
                     <th style="width: 20%">Nome</th>
                     <th>Instituição</th>
+                    <th>Categoria</th>
                     <!-- <th>Membros</th> -->
                     <th>Status</th>
                     <th style="width: 20%">#Ação</th>
@@ -59,6 +60,7 @@
                       <small>{{project.created_at}}</small>
                     </td>
                     <td>{{project.institution}}</td>
+                    <td>{{project.category}}</td>
                     <td>
                       <button type="button" class="btn btn-{% if project.status == 'A' %}%primary{% elif project.status == 'E' %}danger{%else%}success{%endif%} btn-xs">{{project.get_status_display}}</button>
                     </td>

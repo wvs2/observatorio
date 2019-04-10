@@ -76,6 +76,7 @@ class Project(Timestamp):
     STATUS_CHOICE_PROJECT = (
         ('A', 'Andamento'),
         ('C', 'Concluido'),
+        ('P', 'Em Planejamento'),
         ('E', 'Encerrado')
     )
     name = models.CharField('Nome ou Sigla', max_length=1000, null=False, blank=False)
@@ -98,7 +99,8 @@ class Project(Timestamp):
         Category, verbose_name="categoria", on_delete=models.PROTECT, null=True, blank=False
     )
     institution = models.ForeignKey(Institution, verbose_name="instituicao", on_delete=models.PROTECT)
-
+    observation = models.TextField("Observação", blank=True, null=True)
+    
     class Meta:
         verbose_name = "Projeto"
         verbose_name_plural = "Projetos"

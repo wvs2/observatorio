@@ -29,6 +29,7 @@ class IndexTemplateView(TemplateView):
         context['success_project'] = Project.objects.filter(status='C').count()
         context['progress_project'] = Project.objects.filter(status='A').count()
         context['late_project'] = Project.objects.filter(status='A', end_date__lt=date.today()).count()
+        context['plan_project'] = Project.objects.filter(status='P').count()
         context['total_budget'] = Project.objects.all().aggregate(
             total_expected_budget = Sum(functions.Coalesce('expected_budget',0), output_field=FloatField()),
             total_executed_budget = Sum(functions.Coalesce('executed_budget',0), output_field=FloatField())
@@ -76,7 +77,7 @@ class ProjectListView(ListView):
         q = self.request.GET.get('pesq')
         if q:
             return Project.objects.filter(
-                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q)
+                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q) | Q(name__icontains=q)
             )
         return Project.objects.all()
         # return self.get_queryset()
@@ -100,7 +101,7 @@ class ProjectFinishedListView(ListView):
         project = Project.objects.filter(status='C')
         if q:
             project = project.filter(
-                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q)
+                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q) | Q(name__icontains=q)
             )
         return project
 
@@ -122,7 +123,7 @@ class ProjectUnFinishedListView(ListView):
         project = Project.objects.filter(status='A')
         if q:
             project = project.filter(
-                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q)
+                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q) | Q(name__icontains=q)
             )
         return project
 
@@ -144,7 +145,7 @@ class ProjectLateListView(ListView):
         project = Project.objects.filter(status='A', end_date__lt=date.today())
         if q:
             project = project.filter(
-                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q)
+                Q(type__name__icontains=q) | Q(category__name__icontains=q) | Q(institution__name__icontains=q) | Q(name__icontains=q)
             )
         return project
 

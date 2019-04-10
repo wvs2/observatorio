@@ -27,7 +27,7 @@ class ProjectStepForm(forms.ModelForm):
             'name', 'escopo', 'eap', 'start_date', 'end_date', 'finished_date',
             'expected_budget', 'executed_budget', 'status', 'scratchs', 'process_management',
             'tools', 'communication_plan', 'schedule', 'life_cicle',
-            'type', 'category', 'institution'
+            'type', 'observation', 'category', 'institution'
         ]
         widgets = {
             'type': autocomplete.ModelSelect2('core:type-autoselect'),

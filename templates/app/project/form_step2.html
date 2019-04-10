@@ -28,7 +28,7 @@
               {% csrf_token %}
               <div class="form-group">
                 {% for field in form %}
-                <div class="col-md-{% if field.name in 'name/escopo/scratchs/process_management/tools'%}12{% elif field.name in 'start_date/end_date/finished_date/status/expected_budget/executed_budget'%}3{%else%}6{%endif%} col-sm-6 col-xs-12">
+                <div class="col-md-{% if field.name in 'name/escopo/scratchs/process_management/tools/observation'%}12{% elif field.name in 'start_date/end_date/finished_date/status/expected_budget/executed_budget'%}3{%else%}6{%endif%} col-sm-6 col-xs-12">
                   {{ field.label_tag }}
                   {% render_field field class+='form-control' %}
                   {% for error in field.errors %}
