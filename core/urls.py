@@ -12,6 +12,7 @@ urlpatterns = [
     path('lista/concluidos', views.ProjectFinishedListView.as_view(), name='project-finished'),
     path('lista/andamento', views.ProjectUnFinishedListView.as_view(), name='project-unfinished'),
     path('lista/atrasados', views.ProjectLateListView.as_view(), name='project-late'),
+    path('lista/planejamento', views.ProjectPlanListView.as_view(), name='project-plan'),
     path('lista/estourados', views.ProjectBurstListView.as_view(), name='project-burst'),
     path('editar/<int:pk>/step2', views.ProjectStepUpdateView.as_view(), name='project-edit'),
     path('detalhe/<int:pk>/', views.ProjectDetailView.as_view(), name='project-detail'),

@@ -1,0 +1,131 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} Projects {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3>Projetos<small>{{situacao}}</small></h3>
+        </div>
+      <div class="title_right">
+          <form method="get">
+          <div class="col-md-8 col-sm-5 col-xs-12 form-group pull-right top_search">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Pesquisar" name="pesq">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">Buscar!</button>
+              </span>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Projetos</h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <!-- start project list -->
+              <table class="table table-striped projects">
+                <thead>
+                  <tr>
+                    <th style="width: 1%">#</th>
+                    <th style="width: 20%">Nome</th>
+                    <th>Instituição</th>
+                    <th>Categoria</th>
+                    <th>Status</th>
+                    <th style="width: 20%">#Ação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for project in project_list %}
+                  <tr>
+                    <td>#</td>
+                    <td>
+                      <a>{{project.name}}</a>
+                      <br />
+                      <small>{{project.created_at}}</small>
+                    </td>
+                    <td>{{project.institution}}</td>
+                    <td>{{project.category}}</td>
+                    <td>
+                      <button type="button" class="btn btn-{% if project.status == 'A' %}%primary{% elif project.status == 'E' %}danger{%else%}success{%endif%} btn-xs">{{project.get_status_display}}</button>
+                    </td>
+                    <td>
+                      <a href="{% url 'core:project-detail' project.pk %}" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
+                      <a href="{% url 'core:project-edit' project.pk %}" class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Edit </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% if is_paginated %}
+                <hr>
+                <span class="float-left">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</span>
+
+                <nav aria-label="Páginação do filme" class="float-right">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <!-- If it ain't a search result display, don't append the search query
+                            to the URL. -->
+                            {% if not search %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{% url 'core:project-plan' %}?pesq={{search}}&page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
+                                </li>
+                            {% else %}
+                                <!-- Append the searched query to the URL, so that on a search results page,
+                                the pagination don't revert to listing all the listview items. -->
+                                <li class="page-item">
+                                    <a class="page-link" href="{% url 'core:project-plan' %}?pesq={{search}}&&page={{ page_obj.previous_page_number }}" tabindex="-1">Página anterior</a>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Página anterior</a>
+                            </li>
+                        {% endif %}
+                        {% for object in page_obj.paginator.page_range %}
+                            <li class="page-item"><a class="page-link" href="{% url 'core:project-plan' %}?pesq={{search}}&page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            {% if not search %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{% url 'core:project-plan' %}?pesq={{search}}&page={{ page_obj.next_page_number }}">Próxima página</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{% url 'core:project-plan' %}?pesq={{search}}&&page={{ page_obj.next_page_number }}">Próxima página</a>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">Próxima página</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+{% endblock javascripts %}
